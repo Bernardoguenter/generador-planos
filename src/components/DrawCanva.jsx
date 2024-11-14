@@ -1,4 +1,4 @@
-import { Stage, Layer, Line, Text, Rect } from "react-konva";
+import { Stage, Layer, Line, Text } from "react-konva";
 import { calcularCatetoOpuesto, calculoLadoTriangulo } from "../utils/calculos";
 import { useEffect, useState } from "react";
 
@@ -163,15 +163,6 @@ export const DrawCanva = ({
           ref={stageRef}>
           <Layer>
             {/* Líneas perpendiculares Largo Caja (Entre estructura interana y techo interno) */}
-            <Rect
-              x={10}
-              y={10}
-              width={innerWidth <= 1024 ? 400 : 800} // Ajusta el tamaño del Stage
-              height={1000} // Ajusta el tamaño del Stage
-              backgroundColor="red"
-              borderWidth={1}
-              borderColor="black"
-            />
             <Line
               points={[
                 limiteInternoIzqX,
@@ -276,13 +267,6 @@ export const DrawCanva = ({
             />
 
             {/* Textos */}
-            <Text
-              text={`Scale Factor: ${scaleFactor}`}
-              x={0}
-              y={20}
-              fontSize={14}
-              fontStyle="bold"
-            />
             <Text
               text={`Galpón de ${ancho} x ${alto} m`}
               x={0 + innerWidth / 5}
