@@ -21,7 +21,7 @@ const App = () => {
   const stageRef = useRef(null);
 
   return (
-    <main className="flex flex-col md:flex-row gap-4 items-start bg-green-400 min-h-screen">
+    <main className="flex flex-col md:flex-row items-start justify-center min-h-screen w-full">
       <Form
         stageRef={stageRef}
         alto={alto}

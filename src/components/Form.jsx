@@ -39,7 +39,7 @@ export const Form = ({
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="flex flex-col gap-2 w-full md:w-1/3 justify-start items-stretch py-8 px-4 h-full">
+      className="flex flex-col gap-2 w-full md:w-1/4 justify-start items-center py-8 px-8  bg-slate-200 md:min-h-screen ">
       <h2 className="text-2xl font-bold text-center mb-8">
         Generador de Plano
       </h2>
@@ -89,30 +89,30 @@ export const Form = ({
         />
       </div>
 
-      <div className="flex items-center justify-around mt-8">
+      <div className="flex flex-col gap-4 items-center justify-around mt-8 w-full">
         <button
-          className=" max-w-40 text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed 
-            disabled:bg-blue-200 bg-blue-500"
+          className=" w-full text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed 
+            disabled:bg-gray-400 bg-black"
           type="button"
           onClick={handleDraw}
           disabled={!isValid()}>
           Generar Plano
         </button>
         <button
-          className="bg-red-500 max-w-40 text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed 
-            disabled:bg-red-200"
+          className=" w-full text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed 
+            disabled:bg-gray-400 bg-black"
           type="button"
           onClick={resetPlano}
           disabled={!draw}>
           Borrar Plano
         </button>
+        <button
+          onClick={() => convertPDF(stageRef /* , alto, ancho */)}
+          disabled={!draw}
+          className="w-full  max-w-full m-auto text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed disabled:bg-blue-200 bg-blue-800">
+          Exportar plano a PDF
+        </button>
       </div>
-      <button
-        onClick={() => convertPDF(stageRef)}
-        disabled={!draw}
-        className="w-full bg-orange-500  max-w-full m-auto text-center p-2 rounded text-white font-medium disabled:cursor-not-allowed disabled:bg-orange-200">
-        Generar plano en PDF
-      </button>
     </form>
   );
 };
