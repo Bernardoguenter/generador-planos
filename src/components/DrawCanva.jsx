@@ -348,11 +348,6 @@ export const DrawCanva = ({
               x={puntoFinPerpendicularDerX - 20}
               y={puntoFinPerpendicularDerY - 0}
             />
-            <Text
-              text={`scaleFactor:${scaleFactor}`}
-              x={xAxis}
-              y={yAxis + alto * scaleFactor + 40}
-            />
           </Layer>
         </Stage>
       )}
