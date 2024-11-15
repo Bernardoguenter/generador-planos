@@ -3,11 +3,11 @@ import { Form } from "./components/Form";
 import { DrawCanva } from "./components/DrawCanva";
 
 const initialValues = {
-  alto: 0,
-  ancho: 0,
-  pico: 0,
-  anchoColumna: 0.3,
-  largoCaja: 0.6,
+  alto: "0",
+  ancho: "0",
+  pico: "0",
+  anchoColumna: "0.3",
+  largoCaja: "0.6",
 };
 
 const App = () => {

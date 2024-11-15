@@ -18,7 +18,9 @@ export const DrawCanva = ({
 
   useEffect(() => {
     if (alto >= 10) {
-      if (ancho >= 28) {
+      if (ancho > 30) {
+        setScaleFactor(20);
+      } else if (ancho >= 28) {
         setScaleFactor(22);
       } else if (ancho >= 25) {
         setScaleFactor(25);
@@ -26,17 +28,21 @@ export const DrawCanva = ({
         setScaleFactor(28);
       }
       setXAxis(50);
-      setYAxis(200);
+      setYAxis(250);
     } else {
       if (ancho > 25) {
         setScaleFactor(23);
       } else if (ancho <= 25 && ancho > 20) {
         setScaleFactor(28);
-      } else {
+      } else if (ancho <= 20 && ancho > 10) {
         setScaleFactor(30);
+      } else if (ancho <= 10 && ancho > 5) {
+        setScaleFactor(35);
+      } else {
+        setScaleFactor(100);
       }
       setXAxis(100);
-      setYAxis(200);
+      setYAxis(250);
     }
   }, [scaleFactor, alto, xAxis, yAxis, ancho, pico]);
 
@@ -153,12 +159,27 @@ export const DrawCanva = ({
     angulo
   );
 
+  /** ESTO ES PARA CALCULAR EL PUNTO MEDIO DEL TECHO **/
+  //Calcular punto medio del vértice del techo al pico
+  // Pico del techo
+  const xPico = xAxis + (ancho * scaleFactor) / 2;
+  const yPico = yAxis - pico * scaleFactor;
+
+  // Punto medio entre el lado izquierdo y el pico
+  const puntoMedioIzqX = (verticeIzqTechoX + xPico) / 2;
+  const puntoMedioIzqY = (verticeIzqTechoY + yPico) / 2;
+
+  //Ahora no necesito el lado derecho pero ya lo dejamos calculado.
+  /*   // Punto medio entre el lado derecho y el pico
+  const puntoMedioDerX = (verticeDerTechoX + xPico) / 2;
+  const puntoMedioDerY = (verticeDerTechoY + yPico) / 2;
+ */
   return (
     <section className="w-full md:w-3/4 flex flex-col items-center justify-start bg-white min-h-screen">
       {draw && (
         <Stage
-          width={800} // Ajusta el tamaño del Stage
-          height={600} // Ajusta el tamaño del Stage
+          width={1000} // Ajusta el tamaño del Stage
+          height={800} // Ajusta el tamaño del Stage
           backgroundColor="white"
           ref={stageRef}>
           <Layer>
@@ -183,7 +204,6 @@ export const DrawCanva = ({
               strokeWidth={1}
               stroke={"black"}
             />
-
             {/* Líneas Largo Caja */}
             <Line
               points={[
@@ -205,7 +225,6 @@ export const DrawCanva = ({
               strokeWidth={1}
               stroke={"black"}
             />
-
             {/* Techo externo */}
             <Line
               points={[
@@ -219,7 +238,6 @@ export const DrawCanva = ({
               strokeWidth={1}
               stroke={"black"}
             />
-
             <Line
               points={[
                 xAxis + anchoColumna * scaleFactor,
@@ -232,9 +250,7 @@ export const DrawCanva = ({
               stroke="black"
               strokeWidth={1}
             />
-
             {/* Base de la estructura (rectángulo externo)*/}
-
             <Line
               points={[
                 xAxis,
@@ -250,7 +266,6 @@ export const DrawCanva = ({
               stroke={"black"}
             />
             {/* Estructura interna */}
-
             <Line
               points={[
                 xAxis + anchoColumna * scaleFactor,
@@ -265,7 +280,6 @@ export const DrawCanva = ({
               strokeWidth={1}
               stroke={"black"}
             />
-
             {/* Textos */}
             <Text
               text={`Galpón de ${ancho} x ${alto} m`}
@@ -312,16 +326,15 @@ export const DrawCanva = ({
             />
             <Text
               text={`${ladoTecho.toFixed(2)}m`}
+              x={puntoMedioIzqX}
+              y={puntoMedioIzqY - anchoColumna * scaleFactor - 10}
               rotation={-pendienteTecho}
-              x={xAxis * 2}
-              y={yAxis - anchoColumna * scaleFactor * 4}
             />
-            {/* Techo interno */}
             <Text
               text={`${ladoTechoInterno.toFixed(2)}m`}
+              x={puntoMedioIzqX}
+              y={puntoMedioIzqY + anchoColumna * scaleFactor + 10}
               rotation={-pendienteTecho}
-              x={xAxis * 2}
-              y={yAxis}
             />
             <Text
               text={`${largoCaja.toFixed(2)}m`}
@@ -334,6 +347,11 @@ export const DrawCanva = ({
               rotation={anguloMedioTecho}
               x={puntoFinPerpendicularDerX - 20}
               y={puntoFinPerpendicularDerY - 0}
+            />
+            <Text
+              text={`scaleFactor:${scaleFactor}`}
+              x={xAxis}
+              y={yAxis + alto * scaleFactor + 40}
             />
           </Layer>
         </Stage>
