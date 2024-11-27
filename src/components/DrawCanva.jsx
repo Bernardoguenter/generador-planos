@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { Stage, Layer, Line, Text } from "react-konva";
 import { calcularCatetoOpuesto, calculoLadoTriangulo } from "../utils/calculos";
 import { useEffect, useState } from "react";
 
-/* eslint-disable react/prop-types */
 export const DrawCanva = ({
   alto,
   ancho,
@@ -11,40 +11,26 @@ export const DrawCanva = ({
   largoCaja,
   draw,
   stageRef,
+  lineaPico,
+  altoPozo,
+  separacionLineas,
+  columnValues,
 }) => {
-  const [scaleFactor, setScaleFactor] = useState(0);
+  const [scaleFactor, setScaleFactor] = useState(30);
   const [xAxis, setXAxis] = useState(150);
   const [yAxis, setYAxis] = useState(300);
 
   useEffect(() => {
     if (alto >= 10) {
-      if (ancho > 30) {
-        setScaleFactor(20);
-      } else if (ancho >= 28) {
-        setScaleFactor(22);
-      } else if (ancho >= 25) {
-        setScaleFactor(25);
-      } else {
-        setScaleFactor(28);
-      }
       setXAxis(50);
       setYAxis(250);
     } else {
-      if (ancho > 25) {
-        setScaleFactor(23);
-      } else if (ancho <= 25 && ancho > 20) {
-        setScaleFactor(28);
-      } else if (ancho <= 20 && ancho > 10) {
-        setScaleFactor(30);
-      } else if (ancho <= 10 && ancho > 5) {
-        setScaleFactor(35);
-      } else {
-        setScaleFactor(100);
-      }
       setXAxis(100);
       setYAxis(250);
     }
-  }, [scaleFactor, alto, xAxis, yAxis, ancho, pico]);
+  }, [alto]);
+
+  console.log(scaleFactor);
 
   // Calcular la longitud de los lados del triángulo del techo
   const halfBase = ancho / 2;
@@ -174,15 +160,292 @@ export const DrawCanva = ({
   const puntoMedioDerX = (verticeDerTechoX + xPico) / 2;
   const puntoMedioDerY = (verticeDerTechoY + yPico) / 2;
  */
+
+  /** ESTO ES PARA CALCULAR EL PUNTO MEDIO DEL TECHO o LÍNEA DE PICO **/
+
+  // Puntos para dibujar el triángulo del pico entero
+  const baseTrianguloX = xAxis + (ancho * scaleFactor) / 2; // Centro en X (pico)
+  const baseTrianguloY = yAxis - (pico - anchoColumna) * scaleFactor; // Base del triángulo en la línea del techo
+  const alturaTriangulo = (lineaPico - anchoColumna) * scaleFactor; // Cateto opuesto
+  const anguloTriangulo = pendienteTecho * (Math.PI / 180); // Ángulo en radianes
+
+  // Calcular el cateto adyacente a partir del cateto opuesto y el ángulo
+  const baseAdyacente = alturaTriangulo / Math.tan(anguloTriangulo);
+
+  // Coordenadas del vértice derecho
+  const verticeDerechoX = baseTrianguloX + baseAdyacente;
+  const verticeDerechoY = baseTrianguloY + alturaTriangulo;
+
+  // Coordenadas del vértice izquierdo
+  const verticeIzquierdoX = baseTrianguloX - baseAdyacente;
+  const verticeIzquierdoY = verticeDerechoY;
+
+  // Puntos para dibujar el triángulo del pico con separación
+  const baseTrianguloX1 = xAxis + (ancho * scaleFactor) / 2; // Centro en X (pico)
+  const baseTrianguloY1 = yAxis - (pico - anchoColumna) * scaleFactor; // Base del triángulo en la línea del techo
+  const alturaTriangulo1 =
+    (lineaPico - anchoColumna - separacionLineas) * scaleFactor; // Cateto opuesto
+  const anguloTriangulo1 = pendienteTecho * (Math.PI / 180); // Ángulo en radianes
+
+  // Calcular el cateto adyacente a partir del cateto opuesto y el ángulo
+  const baseAdyacente1 = alturaTriangulo1 / Math.tan(anguloTriangulo1);
+
+  // Coordenadas del vértice derecho
+  const verticeDerechoX1 = baseTrianguloX1 + baseAdyacente1;
+  const verticeDerechoY1 = baseTrianguloY1 + alturaTriangulo1;
+
+  // Coordenadas del vértice izquierdo
+  const verticeIzquierdoX1 = baseTrianguloX1 - baseAdyacente1;
+  const verticeIzquierdoY1 = verticeDerechoY1;
+
+  /* CÁLCULO DE COLUMNAS */
+  //Agregar separación entre columnas
+  const newColumnValues = columnValues.map((columna) => {
+    const newCols = parseFloat(columna) + 0.22;
+    return newCols;
+  });
+
+  //Obtener todos los valores de las líneas de columnas
+  const finalColsValues = columnValues
+    .concat(newColumnValues)
+    .sort((a, b) => a - b);
+
+  const calcularPuntoTecho = (columna) => {
+    // Coordenadas de los puntos del techo interno (límites naranja)
+    const xIzquierdoTecho = xAxis + anchoColumna * scaleFactor;
+    const yIzquierdoTecho = yAxis + catetoAdyacente * scaleFactor;
+
+    const xDerechoTecho =
+      xAxis - anchoColumna * scaleFactor + ancho * scaleFactor;
+    const yDerechoTecho = yAxis + catetoAdyacente * scaleFactor;
+
+    // Coordenadas de los puntos de la línea basePico
+    const xIzquierdoBasePico = verticeIzquierdoX;
+    const yIzquierdoBasePico = verticeIzquierdoY;
+
+    const xDerechoBasePico = verticeDerechoX;
+    const yDerechoBasePico = verticeDerechoY;
+
+    // Coordenada X de la columna
+    const xColumna = xAxis + columna * scaleFactor;
+
+    // Determinar el rango en el que está la columna
+    let xInicio, yInicio, xFin, yFin;
+
+    if (xColumna <= xIzquierdoBasePico) {
+      // Lado izquierdo (basePico izquierda)
+      xInicio = xIzquierdoBasePico;
+      yInicio = yIzquierdoBasePico;
+      xFin = xIzquierdoTecho;
+      yFin = yIzquierdoTecho;
+    } else if (xColumna >= xDerechoBasePico) {
+      // Lado derecho (basePico derecha)
+      xInicio = xDerechoBasePico;
+      yInicio = yDerechoBasePico;
+      xFin = xDerechoTecho;
+      yFin = yDerechoTecho;
+    } else if (xColumna > xIzquierdoTecho && xColumna < xDerechoTecho) {
+      // Dentro del techo interno (entre los dos techos)
+      xInicio = xIzquierdoTecho;
+      yInicio = yIzquierdoTecho;
+      xFin = xDerechoTecho;
+      yFin = yDerechoTecho;
+    } else {
+      // Si la columna no entra en ningún rango válido, devolvemos null
+      console.error("Columna fuera de rango válido:", xColumna);
+      return null;
+    }
+
+    // Calcular pendiente (m) y desplazamiento (b)
+    const m = (yFin - yInicio) / (xFin - xInicio);
+    const b = yInicio - m * xInicio;
+
+    // Calcular el punto en el techo interno
+    const yTecho = m * xColumna + b;
+
+    return { xColumna, yTecho };
+  };
+  const puntosColumna = (columna) => {
+    const techo = calcularPuntoTecho(columna);
+
+    // Coordenada X de la columna
+    const xColumna = xAxis + columna * scaleFactor;
+
+    let yBasePico, alturaColumna;
+
+    // Caso 1: Columna dentro del rango basePico
+    if (xColumna >= verticeIzquierdoX && xColumna <= verticeDerechoX1) {
+      // Calculamos la altura directamente en la basePico
+      const mPico =
+        (verticeDerechoY - verticeIzquierdoY) /
+        (verticeDerechoX - verticeIzquierdoX);
+      const bPico = verticeIzquierdoY - mPico * verticeIzquierdoX;
+
+      yBasePico = mPico * xColumna + bPico;
+
+      // Altura de la columna (diferencia entre el punto superior y la base)
+      alturaColumna = (yAxis + alto * scaleFactor - yBasePico) / scaleFactor;
+
+      return {
+        puntos: [
+          xColumna,
+          yBasePico, // Punto superior (basePico)
+          xColumna,
+          yAxis + alto * scaleFactor, // Punto inferior (base)
+        ],
+        alturaColumna,
+      };
+    }
+
+    // Caso 2: Columna fuera del rango basePico (usar cálculo de techo interno)
+    if (techo) {
+      const { xColumna, yTecho } = techo;
+
+      // Altura de la columna (diferencia entre el punto superior y la base)
+      alturaColumna = (yAxis + alto * scaleFactor - yTecho) / scaleFactor;
+
+      return {
+        puntos: [
+          xColumna,
+          yTecho, // Punto superior (techo interno)
+          xColumna,
+          yAxis + alto * scaleFactor, // Punto inferior (base)
+        ],
+        alturaColumna,
+      };
+    }
+
+    // Caso 3: Columna sin techo válido (fallo en el cálculo)
+    alturaColumna = (pico - lineaPico) / scaleFactor;
+
+    return {
+      puntos: [
+        xAxis + columna * scaleFactor,
+        yAxis - (pico - lineaPico) * scaleFactor, // Punto superior (borde superior)
+        xAxis + columna * scaleFactor,
+        yAxis + alto * scaleFactor, // Punto inferior (base)
+      ],
+      alturaColumna,
+    };
+  };
+
   return (
     <section className="w-full md:w-3/4 flex flex-col items-center justify-start bg-white min-h-screen">
       {draw && (
         <Stage
-          width={1000} // Ajusta el tamaño del Stage
-          height={800} // Ajusta el tamaño del Stage
+          width={1000}
+          height={560}
           backgroundColor="white"
+          style={{ border: "1px solid black" }}
           ref={stageRef}>
           <Layer>
+            {/* Columnas */}
+            {finalColsValues.map((columna, index) => {
+              const { puntos, alturaColumna } = puntosColumna(columna);
+
+              return (
+                <>
+                  <Line
+                    key={`line-${index}`}
+                    points={puntos}
+                    stroke="black"
+                    strokeWidth={1}
+                  />
+                  {index % 2 === 0 ? (
+                    <Text
+                      key={`text-${index}`}
+                      text={`${alturaColumna.toFixed(3)}m`}
+                      rotation={90}
+                      x={xAxis + columna * scaleFactor}
+                      y={yAxis + alto / scaleFactor + 50}
+                      fontSize={12}
+                      fill="black"
+                    />
+                  ) : (
+                    <Text
+                      key={`text-${index}`}
+                      text={`${alturaColumna.toFixed(3)}m`}
+                      rotation={90}
+                      x={xAxis + columna * scaleFactor + 10}
+                      y={yAxis + alto / scaleFactor + 50}
+                      fontSize={12}
+                      fill="black"
+                    />
+                  )}
+                </>
+              );
+            })}
+
+            {/* Base Línea Pico Inferior */}
+            <Line
+              points={[
+                verticeIzquierdoX,
+                verticeIzquierdoY, // Vértice izquierdo
+                verticeDerechoX,
+                verticeDerechoY, // Vértice derecho
+              ]}
+              stroke="black"
+              strokeWidth={1}
+              closed={true}
+            />
+            <Text
+              text={`${((2 * baseAdyacente1) / scaleFactor).toFixed(2)}m`}
+              x={baseTrianguloX - 35}
+              y={baseTrianguloY + separacionLineas * scaleFactor + 10}
+              fontSize={12}
+              fill="black"
+            />
+            {/* Base Línea Pico Superior*/}
+            <Line
+              points={[
+                verticeIzquierdoX1,
+                verticeIzquierdoY1, // Vértice izquierdo
+                verticeDerechoX1,
+                verticeDerechoY1, // Vértice derecho
+              ]}
+              stroke="black"
+              strokeWidth={1}
+            />
+            <Text
+              text={`${((2 * baseAdyacente) / scaleFactor).toFixed(2)}m`}
+              x={baseTrianguloX - 35}
+              y={baseTrianguloY + separacionLineas * scaleFactor + 35}
+              fontSize={12}
+              fill="black"
+            />
+            {/* Línea Pico */}
+            <Line
+              points={[
+                xAxis + (ancho * scaleFactor) / 2,
+                yAxis - pico * scaleFactor, // Pico interno central
+                xAxis + (ancho * scaleFactor) / 2,
+                yAxis - (pico - lineaPico) * scaleFactor, // Pico interno central
+              ]}
+              stroke="black"
+              strokeWidth={1}
+            />
+            <Text
+              text={`${lineaPico.toFixed(2)}m`}
+              x={xAxis + (ancho * scaleFactor) / 2}
+              y={yAxis - pico * scaleFactor + anchoColumna * scaleFactor + 10}
+              fontSize={12}
+            />
+            {/* Alto Pozo */}
+            <Line
+              points={[
+                xAxis,
+                yAxis + (alto - altoPozo) * scaleFactor, // Esquina inferior izquierda
+                xAxis + ancho * scaleFactor,
+                yAxis + (alto - altoPozo) * scaleFactor, // Esquina inferior derecha
+              ]}
+              strokeWidth={1}
+              stroke={"black"}
+            />
+            <Text
+              text={`${altoPozo.toFixed(2)}m`}
+              x={xAxis - scaleFactor}
+              y={yAxis + (alto - altoPozo) * scaleFactor}
+            />
             {/* Líneas perpendiculares Largo Caja (Entre estructura interana y techo interno) */}
             <Line
               points={[
@@ -351,6 +614,11 @@ export const DrawCanva = ({
           </Layer>
         </Stage>
       )}
+      <input
+        type="range"
+        value={scaleFactor}
+        onChange={(e) => setScaleFactor(e.target.valueAsNumber)}
+      />
     </section>
   );
 };

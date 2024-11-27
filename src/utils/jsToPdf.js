@@ -8,11 +8,11 @@ export function convertPDF(stageRef, alto, ancho) {
   const pdf = new jsPDF({
     orientation: "landscape",
     unit: "px",
-    format: [1000, 800], // Ajusta el tamaño de acuerdo al canvas
+    format: [1000, 560], // Ajusta el tamaño de acuerdo al canvas
   });
 
   // Agregar la imagen PNG al PDF
-  pdf.addImage(dataURL, "PNG", 10, 10, 780, 580); // Ajusta tamaño y posición de la imagen en el PDF
+  pdf.addImage(dataURL, "PNG", 10, 10, 1000, 560); // Ajusta tamaño y posición de la imagen en el PDF
 
   // Guardar el PDF
   pdf.save(`Plano galpón ${alto}x${ancho}.pdf`);

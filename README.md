@@ -1,8 +1,11 @@
-# React + Vite
+# GENERADOR DE PLANOS PARA GALPONES Y TINGLADOS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Modo de uso
 
-Currently, two official plugins are available:
+- El usuario debe ingresar las medidas del galpón o tinglado que desea visualizar en un plano.
+- Las medidas que solicita son: alto, ancho, pico, ancho de columna, y largo de caja
+- El programa genera un plano 2d del frente de la estructura indicando las medidas resultantes
+- Permite exportar dicho plano a PDF.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+Desarrollado por Juan Martín De Rosa [https://juanmderosa-developer.com]

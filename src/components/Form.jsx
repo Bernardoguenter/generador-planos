@@ -1,6 +1,6 @@
+/* eslint-disable react/prop-types */
 import { convertPDF } from "../utils/jsToPdf";
 
-/* eslint-disable react/prop-types */
 export const Form = ({
   alto,
   setAlto,
@@ -16,12 +16,24 @@ export const Form = ({
   initialValues,
   draw,
   stageRef,
+  lineaPico,
+  setLineaPico,
+  altoPozo,
+  setAltoPozo,
+  cantidadColumnas,
+  setCantidadColumnas,
+  columnValues,
+  setColumnValues,
+  separacionLineas,
+  setSeparacionLineas,
 }) => {
   const isValid = () => {
     return (
       alto !== "" &&
       ancho !== "" &&
       pico !== "" &&
+      altoPozo !== "" &&
+      lineaPico !== "" &&
       ancho !== "0" &&
       alto !== "0"
     );
@@ -34,6 +46,11 @@ export const Form = ({
     setPico(initialValues.pico);
     setAnchoColumna(initialValues.anchoColumna);
     setLargoCaja(initialValues.largoCaja);
+    setLineaPico(initialValues.lineaPico);
+    setAltoPozo(initialValues.altoPozo);
+    setCantidadColumnas(initialValues.cantidadColumnas);
+    setColumnValues(initialValues.columnValues);
+    setSeparacionLineas(initialValues.separacionLineas);
   };
 
   const handleChange = (e) => {
@@ -57,10 +74,29 @@ export const Form = ({
         case "largoCaja":
           setLargoCaja(normalizedValue);
           break;
+        case "lineaPico":
+          setLineaPico(normalizedValue);
+          break;
+        case "altoPozo":
+          setAltoPozo(normalizedValue);
+          break;
+        case "separacionLineas":
+          setSeparacionLineas(normalizedValue);
+          break;
+        case "cantidadColumnas":
+          setCantidadColumnas(normalizedValue);
+          setColumnValues(new Array(normalizedValue).fill("")); // Crea un arreglo vacío con la cantidad de columnas
+          break;
         default:
           break;
       }
     }
+  };
+
+  const handleColumnChange = (index, value) => {
+    const newValues = [...columnValues];
+    newValues[index] = value;
+    setColumnValues(newValues);
   };
 
   const handleSubmit = (e) => {
@@ -72,13 +108,21 @@ export const Form = ({
     const numericPico = parseFloat(pico);
     const numericAnchoColumna = parseFloat(anchoColumna);
     const numericLargoCaja = parseFloat(largoCaja);
+    const numericLineaPico = parseFloat(lineaPico);
+    const numericAltoPozo = parseFloat(altoPozo);
+    const numericCantidadColumnas = parseFloat(cantidadColumnas);
+    const numericSeparacionLineas = parseFloat(separacionLineas);
 
     if (
       isNaN(numericAlto) ||
       isNaN(numericAncho) ||
       isNaN(numericPico) ||
       isNaN(numericAnchoColumna) ||
-      isNaN(numericLargoCaja)
+      isNaN(numericLargoCaja) ||
+      isNaN(numericLineaPico) ||
+      isNaN(numericAltoPozo) ||
+      isNaN(numericCantidadColumnas) ||
+      isNaN(numericSeparacionLineas)
     ) {
       alert("Por favor ingrese valores numéricos válidos.");
       return;
@@ -89,7 +133,10 @@ export const Form = ({
     setPico(numericPico);
     setAnchoColumna(numericAnchoColumna);
     setLargoCaja(numericLargoCaja);
-
+    setLineaPico(numericLineaPico);
+    setAltoPozo(numericAltoPozo);
+    setCantidadColumnas(numericCantidadColumnas);
+    setSeparacionLineas(numericSeparacionLineas);
     setDraw(true);
   };
 
@@ -154,6 +201,66 @@ export const Form = ({
           name="largoCaja"
           disabled={draw}
         />
+      </div>
+      <div className="flex items-center justify-start w-full">
+        <label className="w-1/2">Línea Pico (mts):</label>
+        <input
+          className="w-1/2"
+          type="text"
+          value={lineaPico}
+          onChange={handleChange}
+          name="lineaPico"
+          disabled={draw}
+        />
+      </div>
+      <div className="flex items-center justify-start w-full">
+        <label className="w-1/2">Alto Pozo (mts):</label>
+        <input
+          className="w-1/2"
+          type="text"
+          value={altoPozo}
+          onChange={handleChange}
+          name="altoPozo"
+          disabled={draw}
+        />
+      </div>
+      <div className="flex items-center justify-start w-full">
+        <label className="w-1/2">Separación Líneas (mts):</label>
+        <input
+          className="w-1/2"
+          type="text"
+          value={separacionLineas}
+          onChange={handleChange}
+          name="separacionLineas"
+          disabled={draw}
+        />
+      </div>
+      <div className="flex items-center justify-start w-full">
+        <label className="w-1/2">Cantidad Columnas:</label>
+        <input
+          className="w-1/2"
+          type="text"
+          value={cantidadColumnas}
+          onChange={handleChange}
+          name="cantidadColumnas"
+          disabled={draw}
+        />
+      </div>
+      <div className="w-full flex justify-start items-center flex-wrap">
+        {Array.from({ length: cantidadColumnas }, (_, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-start w-1/2  ">
+            <label className="w-1/2">Col {index + 1}:</label>
+            <input
+              className="w-1/2"
+              type="text"
+              value={columnValues[index] || ""}
+              onChange={(e) => handleColumnChange(index, e.target.value)}
+              disabled={draw}
+            />
+          </div>
+        ))}
       </div>
 
       <div className="flex flex-col gap-4 items-center justify-around mt-8 w-full">
