@@ -85,7 +85,7 @@ export const Form = ({
           break;
         case "cantidadColumnas":
           setCantidadColumnas(normalizedValue);
-          setColumnValues(new Array(normalizedValue).fill("")); // Crea un arreglo vacío con la cantidad de columnas
+          setColumnValues(new Array(normalizedValue).fill(""));
           break;
         default:
           break;

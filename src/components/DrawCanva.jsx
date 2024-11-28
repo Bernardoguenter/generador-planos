@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Stage, Layer, Line, Text } from "react-konva";
 import { calcularCatetoOpuesto, calculoLadoTriangulo } from "../utils/calculos";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const DrawCanva = ({
   alto,
@@ -17,20 +17,8 @@ export const DrawCanva = ({
   columnValues,
 }) => {
   const [scaleFactor, setScaleFactor] = useState(30);
-  const [xAxis, setXAxis] = useState(150);
-  const [yAxis, setYAxis] = useState(300);
-
-  useEffect(() => {
-    if (alto >= 10) {
-      setXAxis(50);
-      setYAxis(250);
-    } else {
-      setXAxis(100);
-      setYAxis(250);
-    }
-  }, [alto]);
-
-  console.log(scaleFactor);
+  const xAxis = 110;
+  const yAxis = 200;
 
   // Calcular la longitud de los lados del triángulo del techo
   const halfBase = ancho / 2;
@@ -274,7 +262,7 @@ export const DrawCanva = ({
     let yBasePico, alturaColumna;
 
     // Caso 1: Columna dentro del rango basePico
-    if (xColumna >= verticeIzquierdoX && xColumna <= verticeDerechoX1) {
+    if (xColumna >= verticeIzquierdoX && xColumna <= verticeDerechoX) {
       // Calculamos la altura directamente en la basePico
       const mPico =
         (verticeDerechoY - verticeIzquierdoY) /
